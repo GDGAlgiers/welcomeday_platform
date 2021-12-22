@@ -1,0 +1,486 @@
+syntax = "proto3";
+
+/*********** PARTIAL MESSAGES **************/
+
+message PositionMessage {
+  int32 x = 1;
+  int32 y = 2;
+  enum Direction {
+    UP = 0;
+    RIGHT = 1;
+    DOWN = 2;
+    LEFT = 3;
+  }
+  Direction direction = 3;
+  bool moving = 4;
+}
+
+message PointMessage {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message ViewportMessage {
+  int32 left = 1;
+  int32 top = 2;
+  int32 right = 3;
+  int32 bottom = 4;
+}
+
+message SilentMessage {
+  bool silent = 1;
+}
+
+message CharacterLayerMessage {
+  string url = 1;
+  string name = 2;
+}
+
+message CompanionMessage {
+  string name = 1;
+}
+
+/*********** CLIENT TO SERVER MESSAGES *************/
+
+message PingMessage {
+
+}
+
+message SetPlayerDetailsMessage {
+  string name = 1;
+  repeated string characterLayers = 2;
+}
+
+message UserMovesMessage {
+  PositionMessage position = 1;
+  ViewportMessage viewport = 2;
+}
+
+message WebRtcSignalToServerMessage {
+  int32 receiverId = 1;
+  string signal = 2;
+}
+
+message ReportPlayerMessage {
+  string reportedUserUuid = 1;
+  string reportComment = 2;
+}
+
+message EmotePromptMessage {
+    string emote = 2;
+}
+
+message EmoteEventMessage {
+    int32 actorUserId = 1;
+    string emote = 2;
+}
+
+message QueryJitsiJwtMessage {
+  string jitsiRoom = 1;
+  string tag = 2; // FIXME: rather than reading the tag from the query, we should read it from the current map!
+}
+
+message ClientToServerMessage {
+  oneof message {
+    UserMovesMessage userMovesMessage = 2;
+    SilentMessage silentMessage = 3;
+    ViewportMessage viewportMessage = 4;
+    ItemEventMessage itemEventMessage = 5;
+    SetPlayerDetailsMessage setPlayerDetailsMessage = 6;
+    WebRtcSignalToServerMessage webRtcSignalToServerMessage = 7;
+    WebRtcSignalToServerMessage webRtcScreenSharingSignalToServerMessage = 8;
+    PlayGlobalMessage playGlobalMessage = 9;
+    StopGlobalMessage stopGlobalMessage = 10;
+    ReportPlayerMessage reportPlayerMessage = 11;
+    QueryJitsiJwtMessage queryJitsiJwtMessage = 12;
+    EmotePromptMessage emotePromptMessage = 13;
+    VariableMessage variableMessage = 14;
+  }
+}
+
+
+/************ BI-DIRECTIONAL MESSAGES **************/
+
+message ItemEventMessage {
+  int32 itemId = 1;
+  string event = 2;
+  string stateJson = 3;
+  string parametersJson = 4;
+}
+
+message VariableMessage {
+  string name = 1;
+  string value = 2;
+}
+
+/**
+ * A variable, along the tag describing who it is targeted at
+ */
+message VariableWithTagMessage {
+  string name = 1;
+  string value = 2;
+  string readableBy = 3;
+}
+
+message PlayGlobalMessage {
+  string type = 1;
+  string content = 2;
+  bool broadcastToWorld = 3;
+}
+
+message StopGlobalMessage {
+  string id = 1;
+}
+
+/*********** SERVER TO CLIENT MESSAGES *************/
+
+message UserMovedMessage {
+  int32 userId = 1;
+  PositionMessage position = 2;
+}
+
+message SubMessage {
+  oneof message {
+    UserMovedMessage userMovedMessage = 1;
+    GroupUpdateMessage groupUpdateMessage = 2;
+    GroupDeleteMessage groupDeleteMessage = 3;
+    UserJoinedMessage userJoinedMessage = 4;
+    UserLeftMessage userLeftMessage = 5;
+    ItemEventMessage itemEventMessage = 6;
+    EmoteEventMessage emoteEventMessage = 7;
+    VariableMessage variableMessage = 8;
+    ErrorMessage errorMessage = 9;
+  }
+}
+
+message BatchMessage {
+  string event = 1;
+  repeated SubMessage payload = 2;
+}
+
+message GroupUpdateMessage {
+  int32 groupId = 1;
+  PointMessage position = 2;
+  int32 groupSize = 3;
+}
+
+message GroupDeleteMessage {
+  int32 groupId = 1;
+}
+
+message UserJoinedMessage {
+  int32 userId = 1;
+  string name = 2;
+  repeated CharacterLayerMessage characterLayers = 3;
+  PositionMessage position = 4;
+  CompanionMessage companion = 5;
+  string visitCardUrl = 6;
+  string userUuid = 7;
+}
+
+message UserLeftMessage {
+  int32 userId = 1;
+}
+
+message ErrorMessage {
+  string message = 1;
+}
+
+message ItemStateMessage {
+  int32 itemId = 1;
+  string stateJson = 2;
+}
+
+message RoomJoinedMessage {
+  //repeated UserJoinedMessage user = 1;
+  //repeated GroupUpdateMessage group = 2;
+  repeated ItemStateMessage item = 3;
+  int32 currentUserId = 4;
+  repeated string tag = 5;
+  repeated VariableMessage variable = 6;
+  string userRoomToken = 7;
+}
+
+message WebRtcStartMessage {
+  int32 userId = 1;
+  bool initiator = 3;
+  string webrtcUserName = 4;
+  string webrtcPassword = 5;
+}
+
+message WebRtcDisconnectMessage {
+  int32 userId = 1;
+}
+
+message WebRtcSignalToClientMessage {
+  int32 userId = 1;
+  string signal = 2;
+  string webrtcUserName = 4;
+  string webrtcPassword = 5;
+}
+
+message TeleportMessageMessage{
+  string map = 1;
+}
+
+message SendJitsiJwtMessage {
+  string jitsiRoom = 1;
+  string jwt = 2;
+}
+
+message SendUserMessage{
+  string type = 1;
+  string message = 2;
+}
+
+message WorldFullWarningMessage{
+}
+message WorldFullWarningToRoomMessage{
+    string roomId = 1;
+}
+message RefreshRoomPromptMessage{
+    string roomId = 1;
+}
+message RefreshRoomMessage{
+    string roomId = 1;
+    int32 versionNumber = 2;
+}
+
+message WorldFullMessage{
+}
+message TokenExpiredMessage{
+}
+
+message WorldConnexionMessage{
+  string message = 2;
+}
+
+message BanUserMessage{
+  string type = 1;
+  string message = 2;
+}
+
+/**
+ * Messages going from back and pusher to the front
+ */
+message ServerToClientMessage {
+  oneof message {
+    BatchMessage batchMessage = 1;
+    ErrorMessage errorMessage = 2;
+    RoomJoinedMessage roomJoinedMessage = 3;
+    WebRtcStartMessage webRtcStartMessage = 4;
+    WebRtcSignalToClientMessage webRtcSignalToClientMessage = 5;
+    WebRtcSignalToClientMessage webRtcScreenSharingSignalToClientMessage = 6;
+    WebRtcDisconnectMessage webRtcDisconnectMessage = 7;
+    PlayGlobalMessage playGlobalMessage = 8;
+    StopGlobalMessage stopGlobalMessage = 9;
+    TeleportMessageMessage teleportMessageMessage = 10;
+    SendJitsiJwtMessage sendJitsiJwtMessage = 11;
+    SendUserMessage sendUserMessage = 12;
+    BanUserMessage banUserMessage = 13;
+    //AdminRoomMessage adminRoomMessage = 14;
+    WorldFullWarningMessage worldFullWarningMessage = 15;
+    WorldFullMessage worldFullMessage = 16;
+    RefreshRoomMessage refreshRoomMessage = 17;
+    WorldConnexionMessage worldConnexionMessage = 18;
+    //EmoteEventMessage emoteEventMessage = 19;
+    TokenExpiredMessage tokenExpiredMessage = 20;
+  }
+}
+
+
+/************************** SERVICES **************************/
+
+message JoinRoomMessage {
+  PositionMessage positionMessage = 1;
+  string name = 2;
+  repeated CharacterLayerMessage characterLayer = 3;
+  string userUuid = 4;
+  string roomId = 5;
+  repeated string tag = 6;
+  string IPAddress = 7;
+  CompanionMessage companion = 8;
+  string visitCardUrl = 9;
+  string userRoomToken = 10;
+}
+
+message UserJoinedZoneMessage {
+  int32 userId = 1;
+  string name = 2;
+  repeated CharacterLayerMessage characterLayers = 3;
+  PositionMessage position = 4;
+  Zone fromZone = 5;
+  CompanionMessage companion = 6;
+  string visitCardUrl = 7;
+  string userUuid = 8;
+}
+
+message UserLeftZoneMessage {
+  int32 userId = 1;
+  Zone toZone = 2;
+}
+
+message GroupUpdateZoneMessage {
+  int32 groupId = 1;
+  PointMessage position = 2;
+  int32 groupSize = 3;
+  Zone fromZone = 4;
+}
+
+message GroupLeftZoneMessage {
+  int32 groupId = 1;
+  Zone toZone = 2;
+}
+
+
+message Zone {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message ZoneMessage {
+  string roomId = 1;
+  int32 x = 2;
+  int32 y = 3;
+}
+
+message RoomMessage {
+  string roomId = 1;
+}
+
+message PusherToBackMessage {
+  oneof message {
+    JoinRoomMessage joinRoomMessage = 1;
+    UserMovesMessage userMovesMessage = 2;
+    SilentMessage silentMessage = 3;
+    ItemEventMessage itemEventMessage = 4;
+    SetPlayerDetailsMessage setPlayerDetailsMessage = 5;
+    WebRtcSignalToServerMessage webRtcSignalToServerMessage = 6;
+    WebRtcSignalToServerMessage webRtcScreenSharingSignalToServerMessage = 7;
+    PlayGlobalMessage playGlobalMessage = 8;
+    StopGlobalMessage stopGlobalMessage = 9;
+    ReportPlayerMessage reportPlayerMessage = 10;
+    QueryJitsiJwtMessage queryJitsiJwtMessage = 11;
+    SendUserMessage sendUserMessage = 12;
+    BanUserMessage banUserMessage = 13;
+    EmotePromptMessage emotePromptMessage = 14;
+    VariableMessage variableMessage = 15;
+  }
+}
+
+message BatchToPusherMessage {
+  repeated SubToPusherMessage payload = 2;
+}
+
+message SubToPusherMessage {
+  oneof message {
+    UserJoinedZoneMessage userJoinedZoneMessage = 1;
+    GroupUpdateZoneMessage groupUpdateZoneMessage = 2;
+    UserMovedMessage userMovedMessage = 3;
+    GroupLeftZoneMessage groupLeftZoneMessage = 4;
+    UserLeftZoneMessage userLeftZoneMessage = 5;
+    ItemEventMessage itemEventMessage = 6;
+    SendUserMessage sendUserMessage = 7;
+    BanUserMessage banUserMessage = 8;
+    EmoteEventMessage emoteEventMessage = 9;
+    ErrorMessage errorMessage = 10;
+  }
+}
+
+message BatchToPusherRoomMessage {
+  repeated SubToPusherRoomMessage payload = 2;
+}
+
+message SubToPusherRoomMessage {
+  oneof message {
+    VariableWithTagMessage variableMessage = 1;
+    ErrorMessage errorMessage = 2;
+  }
+}
+
+
+/*message BatchToAdminPusherMessage {
+  repeated SubToAdminPusherMessage payload = 2;
+}*/
+
+/*message SubToAdminPusherMessage {
+  oneof message {
+    string userUuidJoinedRoom = 1;
+    string userUuidLeftRoom = 2;
+  }
+}
+
+message ServerToAdminClientMessage {
+  repeated SubToAdminPusherMessage payload = 2;
+}*/
+
+message UserJoinedRoomMessage {
+  string uuid = 1;
+  string ipAddress = 2;
+  string name = 3;
+}
+
+message UserLeftRoomMessage {
+  string uuid = 1;
+}
+
+message ServerToAdminClientMessage {
+  oneof message {
+    UserJoinedRoomMessage userJoinedRoom = 1;
+    UserLeftRoomMessage userLeftRoom = 2;
+  }
+}
+
+message AdminPusherToBackMessage {
+  oneof message {
+    string subscribeToRoom = 1;
+    // TODO ban, unban
+  }
+}
+
+// A message sent by an administrator to a recipient
+message AdminMessage {
+  string message = 1;
+  string recipientUuid = 2;
+  string roomId = 3;
+  string type = 4;
+}
+
+// A message sent by an administrator to everyone in a specific room
+message AdminRoomMessage {
+  string message = 1;
+  string roomId = 2;
+  string type = 3;
+}
+
+// A message sent by an administrator to absolutely everybody
+message AdminGlobalMessage {
+  string message = 1;
+}
+
+message BanMessage {
+  string recipientUuid = 1;
+  string roomId = 2;
+  string type = 3;
+  string message = 4;
+}
+
+message EmptyMessage {
+
+}
+
+/**
+ * Service handled by the "back". Pusher servers connect to this service.
+ */
+service RoomManager {
+  rpc joinRoom(stream PusherToBackMessage) returns (stream ServerToClientMessage); // Holds a connection between one given client and the back
+  rpc listenZone(ZoneMessage) returns (stream BatchToPusherMessage); // Connection used to send to a pusher messages related to a given zone of a given room
+  rpc listenRoom(RoomMessage) returns (stream BatchToPusherRoomMessage); // Connection used to send to a pusher messages related to a given room
+  rpc adminRoom(stream AdminPusherToBackMessage) returns (stream ServerToAdminClientMessage);
+  rpc sendAdminMessage(AdminMessage) returns (EmptyMessage);
+  rpc sendGlobalAdminMessage(AdminGlobalMessage) returns (EmptyMessage);
+  rpc ban(BanMessage) returns (EmptyMessage);
+  rpc sendAdminMessageToRoom(AdminRoomMessage) returns (EmptyMessage);
+  rpc sendWorldFullWarningToRoom(WorldFullWarningToRoomMessage) returns (EmptyMessage);
+  rpc sendRefreshRoomPrompt(RefreshRoomPromptMessage) returns (EmptyMessage);
+}
