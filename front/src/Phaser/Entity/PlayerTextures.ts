@@ -163,6 +163,11 @@ export const HAIR_RESOURCES: BodyResourceDescriptionListInterface = {
 };
 
 export const CLOTHES_RESOURCES: BodyResourceDescriptionListInterface = {
+    devfest_tshirt: { name: "devfest_tshirt", img: "resources/customisation/character_clothes/Devfest_Tshirt.png" },
+    gdg_tshirt: { name: "gdg_tshirt", img: "resources/customisation/character_clothes/GDG T-shirt.png" },
+    gdg_hoodie: { name: "gdg_hoodie", img: "resources/customisation/character_clothes/GDG_hoodie.png" },
+    wtm_tshirt: { name: "wtm_tshirt", img: "resources/customisation/character_clothes/WTM T-shirt.png" },
+    wtm_hoodie: { name: "wtm_hoodie", img: "resources/customisation/character_clothes/WTM_hoodie.png" },
     clothes_1: { name: "clothes_1", img: "resources/customisation/character_clothes/character_clothes0.png" },
     clothes_2: { name: "clothes_2", img: "resources/customisation/character_clothes/character_clothes1.png" },
     clothes_3: { name: "clothes_3", img: "resources/customisation/character_clothes/character_clothes2.png" },
