@@ -12,8 +12,9 @@ export interface BodyResourceDescriptionInterface {
 
 export const PLAYER_RESOURCES: BodyResourceDescriptionListInterface = {
    gdg_charactere:{name: "gdg_charactere", img: "resources/characters/pipoya/GDG character.png"}, 
-   male1: { name: "male1", img: "resources/characters/pipoya/Male 01-1.png" },
-    
+   gdg_character_2: { name: "gdg_character_2", img: "resources/characters/pipoya/GDG character 2.png" },
+   gdg_character_3: { name: "gdg_character_3", img: "resources/characters/pipoya/GDG character 3.png" },
+   github_campus: { name: "github_campus", img: "resources/characters/pipoya/Aymen.png" }
 };
 
 export const COLOR_RESOURCES: BodyResourceDescriptionListInterface = {
@@ -164,9 +165,11 @@ export const HAIR_RESOURCES: BodyResourceDescriptionListInterface = {
 
 export const CLOTHES_RESOURCES: BodyResourceDescriptionListInterface = {
     devfest_tshirt: { name: "devfest_tshirt", img: "resources/customisation/character_clothes/Devfest_Tshirt.png" },
-    gdg_tshirt: { name: "gdg_tshirt", img: "resources/customisation/character_clothes/GDG T-shirt.png" },
+    gdg_short: { name: "gdg_short", img: "resources/customisation/character_clothes/GDG_short.png" },
+    gdg_tshirt: { name: "gdg_tshirt", img: "resources/customisation/character_clothes/GDG_tshirt.png" },
     gdg_hoodie: { name: "gdg_hoodie", img: "resources/customisation/character_clothes/GDG_hoodie.png" },
-    wtm_tshirt: { name: "wtm_tshirt", img: "resources/customisation/character_clothes/WTM T-shirt.png" },
+    wtm_tshirt: { name: "wtm_tshirt", img: "resources/customisation/character_clothes/WTM_tshirt.png" },
+    wtm_short: { name: "wtm_short", img: "resources/customisation/character_clothes/WTM_short.png" },
     wtm_hoodie: { name: "wtm_hoodie", img: "resources/customisation/character_clothes/WTM_hoodie.png" },
     clothes_1: { name: "clothes_1", img: "resources/customisation/character_clothes/character_clothes0.png" },
     clothes_2: { name: "clothes_2", img: "resources/customisation/character_clothes/character_clothes1.png" },
