@@ -11,31 +11,10 @@ export interface BodyResourceDescriptionInterface {
 }
 
 export const PLAYER_RESOURCES: BodyResourceDescriptionListInterface = {
-    male1: { name: "male1", img: "resources/characters/pipoya/Male 01-1.png" },
-    male2: { name: "male2", img: "resources/characters/pipoya/Male 02-2.png" },
-    male3: { name: "male3", img: "resources/characters/pipoya/Male 03-4.png" },
-    male4: { name: "male4", img: "resources/characters/pipoya/Male 09-1.png" },
-    male5: { name: "male5", img: "resources/characters/pipoya/Male 10-3.png" },
-    male6: { name: "male6", img: "resources/characters/pipoya/Male 17-2.png" },
-    male7: { name: "male7", img: "resources/characters/pipoya/Male 18-1.png" },
-    male8: { name: "male8", img: "resources/characters/pipoya/Male 16-4.png" },
-    male9: { name: "male9", img: "resources/characters/pipoya/Male 07-2.png" },
-    male10: { name: "male10", img: "resources/characters/pipoya/Male 05-3.png" },
-    male11: { name: "male11", img: "resources/characters/pipoya/Teacher male 02.png" },
-    male12: { name: "male12", img: "resources/characters/pipoya/su4 Student male 12.png" },
-
-    Female1: { name: "Female1", img: "resources/characters/pipoya/Female 01-1.png" },
-    Female2: { name: "Female2", img: "resources/characters/pipoya/Female 02-2.png" },
-    Female3: { name: "Female3", img: "resources/characters/pipoya/Female 03-4.png" },
-    Female4: { name: "Female4", img: "resources/characters/pipoya/Female 09-1.png" },
-    Female5: { name: "Female5", img: "resources/characters/pipoya/Female 10-3.png" },
-    Female6: { name: "Female6", img: "resources/characters/pipoya/Female 17-2.png" },
-    Female7: { name: "Female7", img: "resources/characters/pipoya/Female 18-1.png" },
-    Female8: { name: "Female8", img: "resources/characters/pipoya/Female 16-4.png" },
-    Female9: { name: "Female9", img: "resources/characters/pipoya/Female 07-2.png" },
-    Female10: { name: "Female10", img: "resources/characters/pipoya/Female 05-3.png" },
-    Female11: { name: "Female11", img: "resources/characters/pipoya/Teacher fmale 02.png" },
-    Female12: { name: "Female12", img: "resources/characters/pipoya/su4 Student fmale 12.png" },
+    gdg_charactere:{name: "gdg_charactere", img: "resources/characters/pipoya/GDG character.png"}, 
+   gdg_character_2: { name: "gdg_character_2", img: "resources/characters/pipoya/GDG character 2.png" },
+   gdg_character_3: { name: "gdg_character_3", img: "resources/characters/pipoya/GDG character 3.png" },
+   github_campus: { name: "github_campus", img: "resources/characters/pipoya/Aymen.png" },
 };
 
 export const COLOR_RESOURCES: BodyResourceDescriptionListInterface = {
@@ -185,6 +164,13 @@ export const HAIR_RESOURCES: BodyResourceDescriptionListInterface = {
 };
 
 export const CLOTHES_RESOURCES: BodyResourceDescriptionListInterface = {
+    devfest_tshirt: { name: "devfest_tshirt", img: "resources/customisation/character_clothes/Devfest_Tshirt.png" },
+    gdg_short: { name: "gdg_short", img: "resources/customisation/character_clothes/GDG_short.png" },
+    gdg_tshirt: { name: "gdg_tshirt", img: "resources/customisation/character_clothes/GDG_tshirt.png" },
+    gdg_hoodie: { name: "gdg_hoodie", img: "resources/customisation/character_clothes/GDG_hoodie.png" },
+    wtm_tshirt: { name: "wtm_tshirt", img: "resources/customisation/character_clothes/WTM_tshirt.png" },
+    wtm_short: { name: "wtm_short", img: "resources/customisation/character_clothes/WTM_short.png" },
+    wtm_hoodie: { name: "wtm_hoodie", img: "resources/customisation/character_clothes/WTM_hoodie.png" },
     clothes_1: { name: "clothes_1", img: "resources/customisation/character_clothes/character_clothes0.png" },
     clothes_2: { name: "clothes_2", img: "resources/customisation/character_clothes/character_clothes1.png" },
     clothes_3: { name: "clothes_3", img: "resources/customisation/character_clothes/character_clothes2.png" },
