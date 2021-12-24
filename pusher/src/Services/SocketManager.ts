@@ -8,6 +8,9 @@ import {
     CharacterLayerMessage,
     EmoteEventMessage,
     EmotePromptMessage,
+    FollowRequestMessage,
+    FollowConfirmationMessage,
+    FollowAbortMessage,
     GroupDeleteMessage,
     ItemEventMessage,
     JoinRoomMessage,
@@ -34,6 +37,7 @@ import {
     VariableMessage,
     ErrorMessage,
     WorldFullMessage,
+    PlayerDetailsUpdatedMessage,
 } from "../Messages/generated/messages_pb";
 import { ProtobufUtils } from "../Model/Websocket/ProtobufUtils";
 import { ADMIN_API_URL, JITSI_ISS, JITSI_URL, SECRET_JITSI_KEY } from "../Enum/EnvironmentVariable";
@@ -55,6 +59,7 @@ const debug = Debug("socket");
 interface AdminSocketRoomsList {
     [index: string]: number;
 }
+
 interface AdminSocketUsersList {
     [index: string]: boolean;
 }
@@ -269,9 +274,37 @@ export class SocketManager implements ZoneEventListener {
         this.handleViewport(client, viewport.toObject());
     }
 
+    handleFollowRequest(client: ExSocketInterface, message: FollowRequestMessage): void {
+        const pusherToBackMessage = new PusherToBackMessage();
+        pusherToBackMessage.setFollowrequestmessage(message);
+        client.backConnection.write(pusherToBackMessage);
+    }
+
+    handleFollowConfirmation(client: ExSocketInterface, message: FollowConfirmationMessage): void {
+        const pusherToBackMessage = new PusherToBackMessage();
+        pusherToBackMessage.setFollowconfirmationmessage(message);
+        client.backConnection.write(pusherToBackMessage);
+    }
+
+    handleFollowAbort(client: ExSocketInterface, message: FollowAbortMessage): void {
+        const pusherToBackMessage = new PusherToBackMessage();
+        pusherToBackMessage.setFollowabortmessage(message);
+        client.backConnection.write(pusherToBackMessage);
+    }
+
     onEmote(emoteMessage: EmoteEventMessage, listener: ExSocketInterface): void {
         const subMessage = new SubMessage();
         subMessage.setEmoteeventmessage(emoteMessage);
+
+        emitInBatch(listener, subMessage);
+    }
+
+    onPlayerDetailsUpdated(
+        playerDetailsUpdatedMessage: PlayerDetailsUpdatedMessage,
+        listener: ExSocketInterface
+    ): void {
+        const subMessage = new SubMessage();
+        subMessage.setPlayerdetailsupdatedmessage(playerDetailsUpdatedMessage);
 
         emitInBatch(listener, subMessage);
     }

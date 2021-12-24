@@ -30,10 +30,14 @@ import {
     PingMessage,
     EmoteEventMessage,
     EmotePromptMessage,
+    FollowRequestMessage,
+    FollowConfirmationMessage,
+    FollowAbortMessage,
     SendUserMessage,
     BanUserMessage,
     VariableMessage,
     ErrorMessage,
+    PlayerDetailsUpdatedMessage,
 } from "../Messages/generated/messages_pb";
 
 import type { UserSimplePeerInterface } from "../WebRtc/SimplePeer";
@@ -45,6 +49,7 @@ import {
     ItemEventMessageInterface,
     MessageUserJoined,
     OnConnectInterface,
+    PlayerDetailsUpdatedMessageInterface,
     PlayGlobalMessageInterface,
     PositionInterface,
     RoomJoinedMessageInterface,
@@ -57,7 +62,10 @@ import { adminMessagesService } from "./AdminMessagesService";
 import { worldFullMessageStream } from "./WorldFullMessageStream";
 import { connectionManager } from "./ConnectionManager";
 import { emoteEventStream } from "./EmoteEventStream";
+import { get } from "svelte/store";
 import { warningContainerStore } from "../Stores/MenuStore";
+import { followStateStore, followRoleStore, followUsersStore } from "../Stores/FollowStore";
+import { localUserStore } from "./LocalUserStore";
 
 const manualPingDelay = 20000;
 
@@ -172,6 +180,9 @@ export class RoomConnection implements RoomConnection {
                     } else if (subMessage.hasEmoteeventmessage()) {
                         const emoteMessage = subMessage.getEmoteeventmessage() as EmoteEventMessage;
                         emoteEventStream.fire(emoteMessage.getActoruserid(), emoteMessage.getEmote());
+                    } else if (subMessage.hasPlayerdetailsupdatedmessage()) {
+                        event = EventMessage.USER_DETAILS_UPDATED;
+                        payload = subMessage.getPlayerdetailsupdatedmessage();
                     } else if (subMessage.hasErrormessage()) {
                         const errorMessage = subMessage.getErrormessage() as ErrorMessage;
                         console.error("An error occurred server side: " + errorMessage.getMessage());
@@ -257,6 +268,21 @@ export class RoomConnection implements RoomConnection {
                 warningContainerStore.activateWarningContainer();
             } else if (message.hasRefreshroommessage()) {
                 //todo: implement a way to notify the user the room was refreshed.
+            } else if (message.hasFollowrequestmessage()) {
+                const requestMessage = message.getFollowrequestmessage() as FollowRequestMessage;
+                if (!localUserStore.getIgnoreFollowRequests()) {
+                    followUsersStore.addFollowRequest(requestMessage.getLeader());
+                }
+            } else if (message.hasFollowconfirmationmessage()) {
+                const responseMessage = message.getFollowconfirmationmessage() as FollowConfirmationMessage;
+                followUsersStore.addFollower(responseMessage.getFollower());
+            } else if (message.hasFollowabortmessage()) {
+                const abortMessage = message.getFollowabortmessage() as FollowAbortMessage;
+                if (get(followRoleStore) === "follower") {
+                    followUsersStore.stopFollowing();
+                } else {
+                    followUsersStore.removeFollower(abortMessage.getFollower());
+                }
             } else if (message.hasErrormessage()) {
                 const errorMessage = message.getErrormessage() as ErrorMessage;
                 console.error("An error occurred server side: " + errorMessage.getMessage());
@@ -276,10 +302,24 @@ export class RoomConnection implements RoomConnection {
         }
     }
 
-    public emitPlayerDetailsMessage(userName: string, characterLayersSelected: BodyResourceDescriptionInterface[]) {
+    /*public emitPlayerDetailsMessage(userName: string, characterLayersSelected: BodyResourceDescriptionInterface[]) {
         const message = new SetPlayerDetailsMessage();
         message.setName(userName);
         message.setCharacterlayersList(characterLayersSelected.map((characterLayer) => characterLayer.name));
+
+        const clientToServerMessage = new ClientToServerMessage();
+        clientToServerMessage.setSetplayerdetailsmessage(message);
+
+        this.socket.send(clientToServerMessage.serializeBinary().buffer);
+    }*/
+
+    public emitPlayerOutlineColor(color: number | null) {
+        const message = new SetPlayerDetailsMessage();
+        if (color === null) {
+            message.setRemoveoutlinecolor(true);
+        } else {
+            message.setOutlinecolor(color);
+        }
 
         const clientToServerMessage = new ClientToServerMessage();
         clientToServerMessage.setSetplayerdetailsmessage(message);
@@ -404,6 +444,7 @@ export class RoomConnection implements RoomConnection {
             position: ProtobufClientUtils.toPointInterface(position),
             companion: companion ? companion.getName() : null,
             userUuid: message.getUseruuid(),
+            outlineColor: message.getHasoutline() ? message.getOutlinecolor() : undefined,
         };
     }
 
@@ -596,6 +637,20 @@ export class RoomConnection implements RoomConnection {
         });
     }
 
+    onPlayerDetailsUpdated(callback: (message: PlayerDetailsUpdatedMessageInterface) => void): void {
+        this.onMessage(EventMessage.USER_DETAILS_UPDATED, (message: PlayerDetailsUpdatedMessage) => {
+            const details = message.getDetails();
+            if (details === undefined) {
+                throw new Error("Malformed message. Missing details in PlayerDetailsUpdatedMessage");
+            }
+            callback({
+                userId: message.getUserid(),
+                outlineColor: details.getOutlinecolor(),
+                removeOutlineColor: details.getRemoveoutlinecolor(),
+            });
+        });
+    }
+
     public uploadAudio(file: FormData) {
         return Axios.post(`${UPLOADER_URL}/upload-audio-message`, file)
             .then((res: { data: {} }) => {
@@ -709,6 +764,43 @@ export class RoomConnection implements RoomConnection {
         const clientToServerMessage = new ClientToServerMessage();
         clientToServerMessage.setEmotepromptmessage(emoteMessage);
 
+        this.socket.send(clientToServerMessage.serializeBinary().buffer);
+    }
+
+    public emitFollowRequest(): void {
+        if (!this.userId) {
+            return;
+        }
+        const message = new FollowRequestMessage();
+        message.setLeader(this.userId);
+        const clientToServerMessage = new ClientToServerMessage();
+        clientToServerMessage.setFollowrequestmessage(message);
+        this.socket.send(clientToServerMessage.serializeBinary().buffer);
+    }
+
+    public emitFollowConfirmation(): void {
+        if (!this.userId) {
+            return;
+        }
+        const message = new FollowConfirmationMessage();
+        message.setLeader(get(followUsersStore)[0]);
+        message.setFollower(this.userId);
+        const clientToServerMessage = new ClientToServerMessage();
+        clientToServerMessage.setFollowconfirmationmessage(message);
+        this.socket.send(clientToServerMessage.serializeBinary().buffer);
+    }
+
+    public emitFollowAbort(): void {
+        const isLeader = get(followRoleStore) === "leader";
+        const hasFollowers = get(followUsersStore).length > 0;
+        if (!this.userId || (isLeader && !hasFollowers)) {
+            return;
+        }
+        const message = new FollowAbortMessage();
+        message.setLeader(isLeader ? this.userId : get(followUsersStore)[0]);
+        message.setFollower(isLeader ? 0 : this.userId);
+        const clientToServerMessage = new ClientToServerMessage();
+        clientToServerMessage.setFollowabortmessage(message);
         this.socket.send(clientToServerMessage.serializeBinary().buffer);
     }
 
