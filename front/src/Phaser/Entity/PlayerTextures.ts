@@ -21,9 +21,17 @@ export const PLAYER_RESOURCES: BodyResourceDescriptionListInterface = {
     sohaib_character: { name: "sohaib_character", img: "resources/characters/pipoya/Sohaib.png" },
     wtm_character: { name: "wtm_character", img: "resources/characters/pipoya/WTM Character.png" },
     wtm_character_2: { name: "wtm_character_2", img: "resources/characters/pipoya/WTM Character 2.png" },
-
-
-
+    brainy: { name: "brainy", img: "resources/characters/pipoya/Brainy.png" },
+    male1: { name: "male1", img: "resources/characters/pipoya/Male 01-1.png" },
+    male2: { name: "male2", img: "resources/characters/pipoya/Male 02-2.png" },
+    male9: { name: "male9", img: "resources/characters/pipoya/Male 07-2.png" },
+    male10: { name: "male10", img: "resources/characters/pipoya/Male 05-3.png" },
+    male11: { name: "male11", img: "resources/characters/pipoya/Teacher male 02.png" },
+    male12: { name: "male12", img: "resources/characters/pipoya/su4 Student male 12.png" },
+    Female9: { name: "Female9", img: "resources/characters/pipoya/Female 07-2.png" },
+    Female10: { name: "Female10", img: "resources/characters/pipoya/Female 05-3.png" },
+    Female11: { name: "Female11", img: "resources/characters/pipoya/Teacher fmale 02.png" },
+    Female12: { name: "Female12", img: "resources/characters/pipoya/su4 Student fmale 12.png" },
 };
 
 export const COLOR_RESOURCES: BodyResourceDescriptionListInterface = {
