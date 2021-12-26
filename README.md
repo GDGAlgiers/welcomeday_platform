@@ -1,22 +1,43 @@
-![](https://github.com/thecodingmachine/workadventure/workflows/Continuous%20Integration/badge.svg) [![Discord](https://img.shields.io/discord/821338762134290432?label=Discord)](https://discord.gg/YGtngdh9gt)
 
-![WorkAdventure logo](README-LOGO.svg)
-![WorkAdventure office image](README-MAP.png)
+![GDG logo](gdglogo.png)
 
-Live demo [here](https://play.workadventu.re/@/tcm/workadventure/wa-village).
 
-# WorkAdventure
+# Welcome Day Platform 
+## What is it ??
+the Welcome Day Platform is a custom web-based collaborative workspace presented in the form of a 16-bit video game , based on <a href="https://workadventu.re/"> workadventure's</a>
+platform
 
-WorkAdventure is a web-based collaborative workspace presented in the form of a
-16-bit video game.
+## What's new in GDG welcome day plateform ?
 
-In WorkAdventure you can move around your office and talk to your colleagues (using a video-chat system, triggered when you approach someone).
+### custom characters
 
-See more features for your virtual office: https://workadventu.re/virtual-office
+|charachter 1|charachter 2|charachter 3|charachter 4|
+|:------------:|:------------:|:-------------:|:-------------:|
+![charachter 1](./screens/1.png)|![charachter 2](./screens/5.png)|![charachter 3](./screens/3.png)|![charachter ](./screens/6.png)|
 
-## Community resources
 
-Check out resources developed by the WorkAdventure community at [awesome-workadventure](https://github.com/workadventure/awesome-workadventure)
+
+|Abla|Aymen|Brainy|Ouardia|
+|:------------:|:------------:|:-------------:|:-------------:|
+![abla](./screens/Aboul.png)|![aymen](./screens/Aymen.png)|![Sohaib](./screens/Sohaib.png)|![ouadrdia](./screens/Ouardia.png)|
+
+
+### custom hoodies & T-shirts
+|GDG T-shirt|WTM T-shirt|GDG hoodie|WTM hoodie|
+|:------------:|:------------:|:-------------:|:-------------:|
+![GDG T-shirt](./screens/t1.png)|![wtm T-shirt](./screens/t2.png)|![GDG hoodie](./screens/h1.png)|![WTM hoodie](./screens/h2.png)|
+
+
+### camera & microphone permissions warning
+
+|permissions|
+|:------------:|
+![permission](./screens/permission.jpg)|
+
+### set the name's lengh to 50
+|lenght|
+|:------------:|
+![permission](./screens/lenght.PNG)|
 
 ## Setting up a development environment
 
